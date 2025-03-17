@@ -32,13 +32,13 @@
 </div>
 
 <script>
-   const binUrl = "https://api.npoint.io/1ab24ad38c7017ec53f9";
+   const firebaseUrl = "https://crystal-home-d5071-default-rtdb.firebaseio.com/message.json";
 
    async function loadMessage() {
        try {
-           let response = await fetch(binUrl);
+           let response = await fetch(firebaseUrl);
            let data = await response.json();
-           document.getElementById("message-content").innerText = data.message;
+           document.getElementById("message-content").innerText = data;
        } catch (error) {
            document.getElementById("message-content").innerText = "No message found.";
        }
@@ -50,23 +50,21 @@
            document.getElementById("message-content").innerText = newMessage;
            document.getElementById("new-message").value = "";
 
-           let updatedData = { message: newMessage };
+           let updatedData = JSON.stringify(newMessage);
 
-           await fetch(binUrl, {
+           await fetch(firebaseUrl, {
                method: "PUT",
                headers: {
                    "Content-Type": "application/json"
                },
-               body: JSON.stringify(updatedData)
-           }).then(response => response.json())
-           .then(data => console.log("Message successfully saved:", data))
-           .catch(error => console.error("Error saving message:", error));
+               body: updatedData
+           });
        }
    }
 
-
    loadMessage();
 </script>
+
 
 
 
