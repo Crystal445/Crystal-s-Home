@@ -26,7 +26,9 @@
     <p>More to come soon...</p>
 <p>Last updated: <span id="date-time"></span></p>
 <script>
-    document.getElementById("date-time").innerText = new Date().toLocaleString();
+    window.onload = function() {
+        document.getElementById("date-time").innerText = new Date().toLocaleString();
+    };
 </script>
 </body>
 </html>
