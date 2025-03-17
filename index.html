@@ -31,15 +31,51 @@
    <button onclick="updateMessage()" style="padding: 5px 10px; margin-top: 10px; background-color: #2E86C1; color: white; border: none; cursor: pointer;">Update Message</button>
 </div>
 
+<div id="crystal-message" style="border: 2px solid #2E86C1; padding: 15px; margin: 20px; background-color: #f0f8ff; text-align: center;">
+   <h2 style="color: #2E86C1;">Message for Crystal</h2>
+   <p id="message-content" style="font-size: 18px; color: #333;">Loading latest message...</p>
+   <input type="text" id="new-message" placeholder="Type your message here..." style="width: 80%; padding: 5px; margin-top: 10px;">
+   <button onclick="saveMessage()" style="padding: 5px 10px; margin-top: 10px; background-color: #2E86C1; color: white; border: none; cursor: pointer;">Update Message</button>
+</div>
+
 <script>
-   function updateMessage() {
-       var newMessage = document.getElementById("new-message").value;
-       if (newMessage.trim() !== "") {
-           document.getElementById("message-content").innerText = newMessage;
-           document.getElementById("new-message").value = ""; // Clear input field
+   const binUrl = "https://api.jsonbin.io/v3/b/67d8a25c8960c979a573b08a";
+   const apiKey = ""; // Add API key here if needed
+
+   async function loadMessage() {
+       try {
+           let response = await fetch(binUrl, {
+               headers: { "X-Master-Key": apiKey }
+           });
+           let data = await response.json();
+           document.getElementById("message-content").innerText = data.record.message;
+       } catch (error) {
+           document.getElementById("message-content").innerText = "No message found.";
        }
    }
+
+   async function saveMessage() {
+       let newMessage = document.getElementById("new-message").value;
+       if (newMessage.trim() !== "") {
+           document.getElementById("message-content").innerText = newMessage;
+           document.getElementById("new-message").value = "";
+
+           let updatedData = { message: newMessage };
+
+           await fetch(binUrl, {
+               method: "PUT",
+               headers: {
+                   "Content-Type": "application/json",
+                   "X-Master-Key": apiKey
+               },
+               body: JSON.stringify(updatedData)
+           });
+       }
+   }
+
+   loadMessage();
 </script>
+
 
 <p>Last updated: <span id="date-time"></span></p>
 <script>
