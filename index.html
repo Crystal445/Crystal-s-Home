@@ -58,9 +58,12 @@
                    "Content-Type": "application/json"
                },
                body: JSON.stringify(updatedData)
-           });
+           }).then(response => response.json())
+           .then(data => console.log("Message successfully saved:", data))
+           .catch(error => console.error("Error saving message:", error));
        }
    }
+
 
    loadMessage();
 </script>
