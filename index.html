@@ -38,7 +38,7 @@
        try {
            let response = await fetch(firebaseUrl);
            let data = await response.json();
-           document.getElementById("message-content").innerText = data.message;
+           document.getElementById("message-content").innerText = String(data.message);
        } catch (error) {
            document.getElementById("message-content").innerText = "No message found.";
        }
@@ -50,7 +50,8 @@
            document.getElementById("message-content").innerText = newMessage;
            document.getElementById("new-message").value = "";
 
-           let updatedData = JSON.stringify({ message: newMessage });
+          let updatedData = JSON.stringify({ "message": String(newMessage) });
+
 
            await fetch(firebaseUrl, {
                method: "PUT",
