@@ -89,10 +89,10 @@ async function loadMessage() {
     }
 
     // Load message on page load
-    window.onload = function () {
+window.addEventListener("load", function () {
     console.log("Page loaded. Fetching latest message...");
-    loadMessage(); // Ensure the function runs on page load
-};
+    loadMessage(); // Ensures the function runs when the page loads
+});
 </script>
 
 
