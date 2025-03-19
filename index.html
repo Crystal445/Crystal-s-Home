@@ -38,19 +38,12 @@
 async function loadMessage() {
     try {
         let response = await fetch(firebaseUrl);
-        let data = await response.json();
-        
-        console.log("Firebase response:", data); // Debugging output
-        
-        if (data) {
-            // If the response is nested under a unique key, extract the first available key's value
-            let messageText = data.message || Object.values(data)[0]?.message;
+        let data = await response.text(); // Read response as raw text instead of JSON
 
-            if (messageText) {
-                document.getElementById("message-content").innerText = messageText;
-            } else {
-                document.getElementById("message-content").innerText = "No message found.";
-            }
+        console.log("Firebase response:", data); // Debugging output
+
+        if (data) {
+            document.getElementById("message-content").innerText = data; // Directly use the string
         } else {
             document.getElementById("message-content").innerText = "No message found.";
         }
