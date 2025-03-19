@@ -36,14 +36,23 @@
 
     // Function to load message from Firebase
 async function loadMessage() {
+    console.log("Attempting to fetch message from Firebase...");
     try {
         let response = await fetch(firebaseUrl);
-        let data = await response.text(); // Read response as raw text instead of JSON
+        console.log("Raw Response:", response);
 
-        console.log("Firebase response:", data); // Debugging output
+        let data = await response.json();
+        console.log("Firebase response:", data); // This will show what Firebase sends
 
         if (data) {
-            document.getElementById("message-content").innerText = data; // Directly use the string
+            let messageText = data.message || Object.values(data)[0]?.message;
+            console.log("Extracted Message:", messageText);
+
+            if (messageText) {
+                document.getElementById("message-content").innerText = messageText;
+            } else {
+                document.getElementById("message-content").innerText = "No message found.";
+            }
         } else {
             document.getElementById("message-content").innerText = "No message found.";
         }
