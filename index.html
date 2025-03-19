@@ -32,39 +32,56 @@
 </div>
 
 <script>
-   const firebaseUrl = "https://crystal-home-d5071-default-rtdb.firebaseio.com/message.json";
+    const firebaseUrl = "https://crystal-home-d5071-default-rtdb.firebaseio.com/message.json";
 
-   async function loadMessage() {
-       try {
-           let response = await fetch(firebaseUrl);
-           let data = await response.json();
-           document.getElementById("message-content").innerText = String(data.message);
-       } catch (error) {
-           document.getElementById("message-content").innerText = "No message found.";
-       }
-   }
+    // Function to load message from Firebase
+    async function loadMessage() {
+        try {
+            let response = await fetch(firebaseUrl);
+            let data = await response.json();
 
-   async function saveMessage() {
-       let newMessage = document.getElementById("new-message").value;
-       if (newMessage.trim() !== "") {
-           document.getElementById("message-content").innerText = newMessage;
-           document.getElementById("new-message").value = "";
+            // Check if the data has a "message" key
+            if (data && data.message) {
+                document.getElementById("message-content").innerText = data.message;
+            } else {
+                document.getElementById("message-content").innerText = "No message found.";
+            }
+        } catch (error) {
+            console.error("Error loading message:", error);
+            document.getElementById("message-content").innerText = "Error loading message.";
+        }
+    }
 
-          let updatedData = JSON.stringify({ "message": String(newMessage) });
+    // Function to save message to Firebase
+    async function saveMessage() {
+        let newMessage = document.getElementById("new-message").value;
 
+        if (newMessage.trim() !== "") {
+            document.getElementById("message-content").innerText = newMessage;
+            document.getElementById("new-message").value = "";
 
-           await fetch(firebaseUrl, {
-               method: "PUT",
-               headers: {
-                   "Content-Type": "application/json"
-               },
-               body: updatedData
-           });
-       }
-   }
+            let updatedData = JSON.stringify({ message: newMessage });
 
-   loadMessage();
+            try {
+                await fetch(firebaseUrl, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: updatedData
+                });
+
+                console.log("Message saved successfully!");
+            } catch (error) {
+                console.error("Error saving message:", error);
+            }
+        }
+    }
+
+    // Load message on page load
+    window.onload = loadMessage;
 </script>
+
 
 
 
