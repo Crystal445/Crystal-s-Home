@@ -38,7 +38,7 @@
 async function loadMessage() {
     console.log("Attempting to fetch message from Firebase...");
     try {
-        let response = await fetch(firebaseUrl);
+        let response = await fetch(firebaseUrl + "?t=" + new Date().getTime());
         console.log("Raw Response:", response);
 
         let data = await response.json();
