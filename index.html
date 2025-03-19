@@ -35,31 +35,27 @@
     const firebaseUrl = "https://crystal-home-d5071-default-rtdb.firebaseio.com/message.json";
 
     // Function to load message from Firebase
-async function loadMessage() {
-    console.log("Attempting to fetch message from Firebase...");
-    try {
-        let response = await fetch(firebaseUrl + "?t=" + new Date().getTime()); // Forces a fresh fetch
-        let data = await response.json();
+function listenForUpdates() {
+    const database = firebase.database();
+    const messageRef = database.ref("message"); // Adjust if your database structure is different
 
-        console.log("Firebase response:", data); // Debugging output
-
+    messageRef.on("value", (snapshot) => {
+        const data = snapshot.val();
         if (data) {
-            let messageText = data.message || Object.values(data)[0]?.message;
-            console.log("Extracted Message:", messageText);
-
-            if (messageText) {
-                document.getElementById("message-content").innerText = messageText;
-            } else {
-                document.getElementById("message-content").innerText = "No message found.";
-            }
-        } else {
-            document.getElementById("message-content").innerText = "No message found.";
+            document.getElementById("message-content").innerText = data;
+            console.log("Updated message from Firebase:", data);
         }
-    } catch (error) {
-        console.error("Error loading message:", error);
-        document.getElementById("message-content").innerText = "Error loading message.";
-    }
+    }, (error) => {
+        console.error("Error listening for updates:", error);
+    });
 }
+
+// Call the function when the page loads
+window.onload = function () {
+    console.log("Listening for real-time updates...");
+    listenForUpdates();
+};
+
 
 
     // Function to save message to Firebase
