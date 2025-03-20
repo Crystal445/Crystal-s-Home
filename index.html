@@ -103,27 +103,26 @@ window.addEventListener("load", function () {
     };
 </script>
     <!-- Firebase SDK -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
 
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+<script>
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCv81M0SQTT38AZSMs0I0snnMInIXuXpC8",
+    authDomain: "crystal-home-d5071.firebaseapp.com",
+    databaseURL: "https://crystal-home-d5071-default-rtdb.firebaseio.com",
+    projectId: "crystal-home-d5071",
+    storageBucket: "crystal-home-d5071.firebasestorage.app",
+    messagingSenderId: "68398414606",
+    appId: "1:68398414606:web:cdf79e1cb989e8093ff55f"
+  };
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCv81M0SQTT38AZSMs0I0snnMInIXuXpC8",
-  authDomain: "crystal-home-d5071.firebaseapp.com",
-  databaseURL: "https://crystal-home-d5071-default-rtdb.firebaseio.com",
-  projectId: "crystal-home-d5071",
-  storageBucket: "crystal-home-d5071.firebasestorage.app",
-  messagingSenderId: "68398414606",
-  appId: "1:68398414606:web:cdf79e1cb989e8093ff55f"
-};
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
 
 </body>
 </html>
