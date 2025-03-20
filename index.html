@@ -78,30 +78,30 @@ window.onload = function () {
 
 
     // Function to save message to Firebase
-    async function saveMessage() {
-        let newMessage = document.getElementById("new-message").value;
+function saveMessage() {
+    let newMessage = document.getElementById("new-message").value.trim();
 
-        if (newMessage.trim() !== "") {
-            document.getElementById("message-content").innerText = newMessage;
-            document.getElementById("new-message").value = "";
-
-            let updatedData = JSON.stringify({ message: newMessage });
-
-            try {
-                await fetch(firebaseUrl, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: updatedData
-                });
-
-                console.log("Message saved successfully!");
-            } catch (error) {
-                console.error("Error saving message:", error);
-            }
-        }
+    if (newMessage === "") {
+        console.log("Message is empty, not updating.");
+        return;  // Don't allow empty messages
     }
+
+    // Debugging: Show message being sent
+    console.log("Saving message to Firebase:", newMessage);
+
+    database.ref("message").set({
+        message: newMessage
+    })
+    .then(() => {
+        console.log("Message saved successfully!");
+        document.getElementById("message-content").innerText = newMessage;
+        document.getElementById("new-message").value = ""; // Clear input field
+    })
+    .catch((error) => {
+        console.error("Error saving message:", error);
+    });
+}
+
 
     // Load message on page load
 window.addEventListener("load", function () {
