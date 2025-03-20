@@ -151,20 +151,25 @@ const auth = getAuth(app);
 
 
   // Authentication function
-  function login() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      firebase.auth().signInWithEmailAndPassword(email, password)
+ function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    
+    signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          console.log("Logged in successfully!", userCredential.user);
-          document.getElementById("auth-status").innerText = "Logged in!";
-          listenForUpdates(); // Start listening to Firebase data after login
+            const user = userCredential.user;
+            console.log("Logged in successfully!", user.email);
+            document.getElementById("auth-status").innerText = "Logged in as " + user.email;
+            
+            // Once logged in, start listening for Firebase data
+            listenForUpdates();
         })
         .catch((error) => {
-          console.error("Login failed:", error.message);
-          document.getElementById("auth-status").innerText = "Login failed. Try again.";
+            console.error("Login failed:", error.message);
+            document.getElementById("auth-status").innerText = "Login failed. Try again.";
         });
-  }
+}
+
 
   // Listen for Firebase auth state changes
   firebase.auth().onAuthStateChanged((user) => {
