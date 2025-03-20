@@ -145,11 +145,15 @@ window.addEventListener("load", function () {
 
   // Authentication function
   function login() {
-    let email = document.getElementById("email").value.trim(); // Remove spaces
+    let email = document.getElementById("email").value.trim(); // Trim spaces
     let password = document.getElementById("password").value;
 
-    if (!email.includes("@") || !email.includes(".")) {  // Basic validation
-        document.getElementById("auth-status").innerText = "Invalid email format.";
+    // Debugging: Show email being sent to Firebase
+    console.log("Attempting login with email:", email);
+    
+    // Validate email format before sending to Firebase
+    if (!email.includes("@") || !email.includes(".")) {  
+        document.getElementById("auth-status").innerText = "Invalid email format. Please try again.";
         return;
     }
 
@@ -162,7 +166,7 @@ window.addEventListener("load", function () {
         })
         .catch((error) => {
             console.error("Login failed:", error.message);
-            document.getElementById("auth-status").innerText = "Login failed. Try again.";
+            document.getElementById("auth-status").innerText = "Login failed. Check email/password.";
         });
 }
 
