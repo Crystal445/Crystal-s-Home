@@ -139,8 +139,16 @@ window.addEventListener("load", function () {
     appId: "1:68398414606:web:cdf79e1cb989e8093ff55f"
   };
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+const auth = getAuth(app);
+
 
   // Authentication function
   function login() {
