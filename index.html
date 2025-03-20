@@ -37,18 +37,27 @@
     // Function to load message from Firebase
 function listenForUpdates() {
     const database = firebase.database();
-    const messageRef = database.ref("message"); // Adjust if your database structure is different
+    const messageRef = database.ref("message"); // Adjust if needed
 
     messageRef.on("value", (snapshot) => {
         const data = snapshot.val();
         if (data) {
             document.getElementById("message-content").innerText = data;
             console.log("Updated message from Firebase:", data);
+        } else {
+            document.getElementById("message-content").innerText = "No message found.";
         }
     }, (error) => {
         console.error("Error listening for updates:", error);
     });
 }
+
+// Run listener when page loads
+window.onload = function () {
+    console.log("Listening for real-time updates...");
+    listenForUpdates();
+};
+
 
 // Call the function when the page loads
 window.onload = function () {
