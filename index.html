@@ -122,65 +122,57 @@ window.addEventListener("load", function () {
     };
 </script>
 
-<!-- Firebase SDK -->
+<!-- Firebase SDK (v8) -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
-  // Your Firebase configuration
+  // Initialize Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyCv81M0SQTT38AZSMs0I0snnMInIXuXpC8",
     authDomain: "crystal-home-d5071.firebaseapp.com",
     databaseURL: "https://crystal-home-d5071-default-rtdb.firebaseio.com",
     projectId: "crystal-home-d5071",
-    storageBucket: "crystal-home-d5071.firebasestorage.app",
+    storageBucket: "crystal-home-d5071.appspot.com",
     messagingSenderId: "68398414606",
     appId: "1:68398414606:web:cdf79e1cb989e8093ff55f"
   };
 
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-const auth = getAuth(app);
-
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const database = firebase.database();
 
   // Authentication function
- function login() {
+  function login() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
-    
-    signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            console.log("Logged in successfully!", user.email);
-            document.getElementById("auth-status").innerText = "Logged in as " + user.email;
-            
-            // Once logged in, start listening for Firebase data
-            listenForUpdates();
-        })
-        .catch((error) => {
-            console.error("Login failed:", error.message);
-            document.getElementById("auth-status").innerText = "Login failed. Try again.";
-        });
-}
 
+    auth.signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log("Logged in successfully!", user.email);
+        document.getElementById("auth-status").innerText = "Logged in as " + user.email;
+
+        // Once logged in, start listening for Firebase data
+        listenForUpdates();
+      })
+      .catch((error) => {
+        console.error("Login failed:", error.message);
+        document.getElementById("auth-status").innerText = "Login failed. Try again.";
+      });
+  }
 
   // Listen for Firebase auth state changes
-  firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-          console.log("User is logged in:", user.email);
-          document.getElementById("auth-status").innerText = "Logged in!";
-          listenForUpdates(); // Fetch messages when authenticated
-      } else {
-          console.log("User is logged out.");
-          document.getElementById("auth-status").innerText = "Not logged in.";
-      }
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      console.log("User is logged in:", user.email);
+      document.getElementById("auth-status").innerText = "Logged in!";
+      listenForUpdates(); // Fetch messages when authenticated
+    } else {
+      console.log("User is logged out.");
+      document.getElementById("auth-status").innerText = "Not logged in.";
+    }
   });
 </script>
 
