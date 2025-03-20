@@ -41,12 +41,12 @@ function listenForUpdates() {
 
     messageRef.on("value", (snapshot) => {
         const data = snapshot.val();
-        if (data) {
-           document.getElementById("message-content").innerText = data.message;
-            console.log("Updated message from Firebase:", data);
-        } else {
-            document.getElementById("message-content").innerText = "No message found.";
-        }
+       if (data && typeof data === "object" && data.message) {
+    document.getElementById("message-content").innerText = data.message;
+} else {
+    document.getElementById("message-content").innerText = "No message found.";
+}
+
     }, (error) => {
         console.error("Error listening for updates:", error);
     });
