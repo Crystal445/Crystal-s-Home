@@ -145,23 +145,27 @@ window.addEventListener("load", function () {
 
   // Authentication function
   function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    let email = document.getElementById("email").value.trim(); // Remove spaces
+    let password = document.getElementById("password").value;
+
+    if (!email.includes("@") || !email.includes(".")) {  // Basic validation
+        document.getElementById("auth-status").innerText = "Invalid email format.";
+        return;
+    }
 
     auth.signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log("Logged in successfully!", user.email);
-        document.getElementById("auth-status").innerText = "Logged in as " + user.email;
+        .then((userCredential) => {
+            const user = userCredential.user;
+            console.log("Logged in successfully!", user.email);
+            document.getElementById("auth-status").innerText = "Logged in as " + user.email;
+            listenForUpdates(); // Start listening to Firebase messages
+        })
+        .catch((error) => {
+            console.error("Login failed:", error.message);
+            document.getElementById("auth-status").innerText = "Login failed. Try again.";
+        });
+}
 
-        // Once logged in, start listening for Firebase data
-        listenForUpdates();
-      })
-      .catch((error) => {
-        console.error("Login failed:", error.message);
-        document.getElementById("auth-status").innerText = "Login failed. Try again.";
-      });
-  }
 
   // Listen for Firebase auth state changes
   auth.onAuthStateChanged((user) => {
