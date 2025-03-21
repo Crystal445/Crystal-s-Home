@@ -182,6 +182,58 @@ function login() {
       document.getElementById("auth-status").innerText = "Not logged in.";
     }
   });
+async function getAPIKey() {
+    let response = await fetch("/__/firebase/init.json");
+    let config = await response.json();
+    return config.openai.key;
+}
+
+async function generateResponse(userMessage) {
+    let apiKey = await getAPIKey();
+
+    if (!apiKey) {
+        console.error("OpenAI API key not found.");
+        return;
+    }
+
+    const url = "https://api.openai.com/v1/chat/completions";
+    const requestBody = {
+        model: "gpt-3.5-turbo",
+        messages: [
+            { role: "system", content: "You are Crystal AI, a friendly and caring assistant who knows Mike well." },
+            { role: "user", content: userMessage }
+        ],
+        max_tokens: 100
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${apiKey}`
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        const data = await response.json();
+        const aiReply = data.choices[0].message.content;
+
+        console.log("Crystal AI Response:", aiReply);
+
+        // Write the AI response back to Firebase
+        database.ref("messages").push({
+            text: aiReply,
+            timestamp: Date.now(),
+            sender: "Crystal"
+        });
+
+    } catch (error) {
+        console.error("Error generating AI response:", error);
+    }
+}
+
+    
 </script>
 
 
