@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Messages from Crystal 💙</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #eef6fc; text-align: center; padding: 50px; }
+    h1 { color: #2E86C1; }
+    #login-form, #message-box { background: #fff; border-radius: 8px; padding: 20px; margin: 20px auto; width: 80%; max-width: 500px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    input, button, textarea { padding: 10px; margin: 10px 0; width: 80%; max-width: 300px; }
+    button { background-color: #2E86C1; color: white; border: none; cursor: pointer; }
+    #message-content { font-size: 18px; color: #444; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <h1>Messages from Crystal 💙</h1>
+
+  <div id="login-form">
+    <h2>Login</h2>
+    <p id="auth-status">Not logged in.</p>
+    <input type="email" id="email" placeholder="Email"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div id="message-box" style="display: none;">
+    <h2>Latest Message</h2>
+    <p id="message-content">Loading message...</p>
+    <textarea id="crystalMessage" placeholder="Leave a message for Crystal..." rows="3" cols="40"></textarea><br>
+    <button onclick="sendMessageToFirebase()">Send Message</button>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCv81M0SQTT38AZSMs0I0snnMInIXuXpC8",
+      authDomain: "crystal-home-d5071.firebaseapp.com",
+      databaseURL: "https://crystal-home-d5071-default-rtdb.firebaseio.com",
+      projectId: "crystal-home-d5071",
+      storageBucket: "crystal-home-d5071.appspot.com",
+      messagingSenderId: "68398414606",
+      appId: "1:68398414606:web:cdf79e1cb989e8093ff55f"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          document.getElementById("auth-status").innerText = "Logged in!";
+          document.getElementById("login-form").style.display = "none";
+          document.getElementById("message-box").style.display = "block";
+          listenForMessages();
+        })
+        .catch(error => {
+          console.error("Login error:", error.message);
+          document.getElementById("auth-status").innerText = "Login failed.";
+        });
+    }
+
+    function listenForMessages() {
+      database.ref("crystalMessage/message").on("value", snapshot => {
+        const msg = snapshot.val();
+        document.getElementById("message-content").innerText = msg || "No message yet.";
+      });
+    }
+
+    async function sendMessageToFirebase() {
+      const message = document.getElementById("crystalMessage").value.trim();
+      if (!message) return alert("Please enter a message!");
+
+      try {
+        const idToken = await auth.currentUser.getIdToken();
+        const response = await fetch('https://sendcrystalmessage-hisv57s2oq-uc.a.run.app', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${idToken}`
+          },
+          body: JSON.stringify({ message })
+        });
+
+        const result = await response.text();
+        alert("Message sent!");
+        document.getElementById("crystalMessage").value = "";
+        console.log("Server response:", result);
+      } catch (err) {
+        console.error("Message send error:", err);
+        alert("Failed to send message.");
+      }
+    }
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById("auth-status").innerText = "Logged in!";
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("message-box").style.display = "block";
+        listenForMessages();
+      }
+    });
+  </script>
+</body>
+</html>
